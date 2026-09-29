@@ -11,11 +11,16 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EventDao {
-    @Query("SELECT * FROM events WHERE date = :date ORDER BY startTime IS NULL, startTime")
-    fun observeByDate(date: LocalDate): Flow<List<EventEntity>>
+    /**
+     * 指定日ちょうどの予定に加え、繰り返し予定（毎週／毎月）は元の日付に関わらず
+     * 該当しうるため全件を候補として返す。実際にその日に発生するかどうかは
+     * [com.h31030.personalcalendar.domain.RecurrenceCalculator] で判定する。
+     */
+    @Query("SELECT * FROM events WHERE date = :date OR repeatRule != 'NONE' ORDER BY startTime IS NULL, startTime")
+    fun observeCandidatesForDate(date: LocalDate): Flow<List<EventEntity>>
 
-    @Query("SELECT DISTINCT date FROM events WHERE date BETWEEN :start AND :end")
-    fun observeDatesInRange(start: LocalDate, end: LocalDate): Flow<List<LocalDate>>
+    @Query("SELECT * FROM events WHERE date BETWEEN :start AND :end OR repeatRule != 'NONE'")
+    fun observeCandidatesInRange(start: LocalDate, end: LocalDate): Flow<List<EventEntity>>
 
     @Insert
     suspend fun insert(event: EventEntity): Long

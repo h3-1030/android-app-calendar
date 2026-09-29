@@ -17,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.h31030.personalcalendar.data.local.entity.CategoryEntity
 import com.h31030.personalcalendar.data.local.entity.EventEntity
+import com.h31030.personalcalendar.data.local.entity.RepeatRule
 import com.h31030.personalcalendar.data.local.entity.TodoEntity
 import com.h31030.personalcalendar.data.local.entity.TransactionEntity
 import com.h31030.personalcalendar.data.local.entity.TransactionType
@@ -128,7 +130,10 @@ fun DayDetailScreen(date: LocalDate, onBack: () -> Unit) {
 
     if (showAddEvent) {
         AddEventDialog(
-            onConfirm = { title, memo -> viewModel.addEvent(title, memo); showAddEvent = false },
+            onConfirm = { title, memo, repeatRule ->
+                viewModel.addEvent(title, memo, repeatRule)
+                showAddEvent = false
+            },
             onDismiss = { showAddEvent = false },
         )
     }
@@ -252,9 +257,13 @@ private fun TransactionRow(transaction: TransactionEntity, categoryName: String,
 }
 
 @Composable
-private fun AddEventDialog(onConfirm: (title: String, memo: String) -> Unit, onDismiss: () -> Unit) {
+private fun AddEventDialog(
+    onConfirm: (title: String, memo: String, repeatRule: RepeatRule) -> Unit,
+    onDismiss: () -> Unit,
+) {
     var title by remember { mutableStateOf("") }
     var memo by remember { mutableStateOf("") }
+    var repeatRule by remember { mutableStateOf(RepeatRule.NONE) }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("予定を追加") },
@@ -262,10 +271,34 @@ private fun AddEventDialog(onConfirm: (title: String, memo: String) -> Unit, onD
             Column {
                 OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("タイトル") })
                 OutlinedTextField(value = memo, onValueChange = { memo = it }, label = { Text("メモ（任意）") })
+                Text(
+                    text = "繰り返し",
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Row {
+                    FilterChip(
+                        selected = repeatRule == RepeatRule.NONE,
+                        onClick = { repeatRule = RepeatRule.NONE },
+                        label = { Text("なし") },
+                    )
+                    FilterChip(
+                        selected = repeatRule == RepeatRule.WEEKLY,
+                        onClick = { repeatRule = RepeatRule.WEEKLY },
+                        label = { Text("毎週") },
+                        modifier = Modifier.padding(start = 4.dp),
+                    )
+                    FilterChip(
+                        selected = repeatRule == RepeatRule.MONTHLY,
+                        onClick = { repeatRule = RepeatRule.MONTHLY },
+                        label = { Text("毎月") },
+                        modifier = Modifier.padding(start = 4.dp),
+                    )
+                }
             }
         },
         confirmButton = {
-            Button(onClick = { onConfirm(title, memo) }, enabled = title.isNotBlank()) { Text("保存") }
+            Button(onClick = { onConfirm(title, memo, repeatRule) }, enabled = title.isNotBlank()) { Text("保存") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("キャンセル") } },
     )

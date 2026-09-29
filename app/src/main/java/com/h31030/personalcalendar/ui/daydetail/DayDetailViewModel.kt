@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.h31030.personalcalendar.data.local.entity.CategoryEntity
 import com.h31030.personalcalendar.data.local.entity.DiaryEntryEntity
 import com.h31030.personalcalendar.data.local.entity.EventEntity
+import com.h31030.personalcalendar.data.local.entity.RepeatRule
 import com.h31030.personalcalendar.data.local.entity.TodoEntity
 import com.h31030.personalcalendar.data.local.entity.TransactionEntity
 import com.h31030.personalcalendar.data.repository.CategoryRepository
@@ -55,10 +56,12 @@ class DayDetailViewModel(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DayDetailUiState(date = date))
 
-    fun addEvent(title: String, memo: String) {
+    fun addEvent(title: String, memo: String, repeatRule: RepeatRule = RepeatRule.NONE) {
         if (title.isBlank()) return
         viewModelScope.launch {
-            eventRepository.save(EventEntity(date = date, title = title.trim(), memo = memo.trim()))
+            eventRepository.save(
+                EventEntity(date = date, title = title.trim(), memo = memo.trim(), repeatRule = repeatRule),
+            )
         }
     }
 
