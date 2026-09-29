@@ -1,0 +1,5 @@
+<resources>
+    <!-- Compose owns the actual theming; this is only the base window theme
+         referenced from the manifest before the first Compose frame is drawn. -->
+    <style name="Theme.PersonalCalendar" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">パーソナルカレンダー</string>
+
+    <string name="nav_calendar">カレンダー</string>
+    <string name="nav_todo">Todo一覧</string>
+    <string name="nav_budget">家計簿サマリー</string>
+    <string name="nav_settings">設定</string>
+
+    <string name="quick_add_title">クイック追加</string>
+    <string name="quick_add_event">予定</string>
+    <string name="quick_add_todo">Todo</string>
+    <string name="quick_add_diary">日記</string>
+    <string name="quick_add_budget">家計簿</string>
+
+    <string name="action_save">保存</string>
+    <string name="action_cancel">キャンセル</string>
+    <string name="action_add">追加</string>
+    <string name="action_delete">削除</string>
+</resources>
