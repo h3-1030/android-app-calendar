@@ -25,9 +25,11 @@ Android Studio（Ladybug以降推奨）でプロジェクトルートを開き�
 ## 現状（雛形段階）
 
 - データ層（Room：Entity / DAO / Database）、Repository層、5画面（カレンダー・日別詳細・Todo一覧・家計簿サマリー・設定）とクイック追加を実装済み。
+- 予定の繰り返し（毎週／毎月）に対応。1回分だけの例外編集・除外は未対応（フェーズ2）。
 - 家計簿サマリーのグラフはシンプルな棒表示（Compose標準コンポーネントのみ）。要件定義書にあるチャートライブラリ（Vico等）の導入は未着手。
-- クラウド同期（Firebase）、通知・リマインダー、予定の繰り返し例外編集などフェーズ2以降の機能は未実装。
+- クラウド同期（Firebase）、通知・リマインダーなどフェーズ2以降の機能は未実装。
 
-## 注記
+## ビルド確認状況
 
-このリポジトリのクラウド開発環境ではネットワークポリシー上 `dl.google.com`（Android Gradle PluginやAndroidX等が配布されるGoogle Mavenリポジトリ）への接続がブロックされているため、この環境内では実際のGradleビルド・依存関係解決を検証できていません。Android StudioやCI等、Google Mavenに到達できる環境で最初のビルドを行ってください。
+`./gradlew assembleDebug` および `./gradlew lintDebug` がエラー0件で成功することを確認済み（警告47件、いずれもcontentDescription未設定などの軽微なもの）。ユニットテストは未実装（`testDebugUnitTest` はNO-SOURCE）。
+実機・エミュレータでの起動確認は未実施のため、Android Studioで一度動作確認することを推奨します。
